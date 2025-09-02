@@ -1,6 +1,7 @@
 <template>
   <div>
-    <nav style="margin-bottom: 20px">
+    <!-- Navbar hanya muncul di /register dan /login -->
+    <nav v-if="['/register', '/login'].includes(route.path)" style="margin-bottom: 20px">
       <router-link to="/register" style="margin-right: 10px">Register</router-link>
       <router-link to="/login">Login</router-link>
     </nav>
@@ -11,5 +12,7 @@
 </template>
 
 <script setup>
-// ga perlu logic disini dulu
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 </script>

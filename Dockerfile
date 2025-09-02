@@ -1,27 +1,29 @@
 # Stage 1: Build Vue app
-FROM node:18-alpine AS build
+FROM node:16-alpine AS build
 WORKDIR /app
 
-# Copy dependency files dan install
+# Tambahkan dependency yang kadang dibutuhkan (node-gyp, sass, dll)
+RUN apk add --no-cache python3 make g++ 
+
+# Copy file dependency dan install
 COPY package*.json ./
 RUN npm install
 
-# Copy semua source code
+# Copy seluruh project
 COPY . .
 
-# Build aplikasi Vue (hasilnya ke folder dist)
+# Build Vue app
 RUN npm run build
 
 
-# Stage 2: Serve dengan Nginx
+# Stage 2: Serve hasil build dengan Nginx
 FROM nginx:stable-alpine
-# Hapus default config nginx
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy hasil build Vue ke folder html Nginx
+# Copy hasil build dari stage 1
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config (opsional, kalau butuh SPA mode / history mode routing)
+# (Opsional) Copy config untuk routing Vue history mode
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

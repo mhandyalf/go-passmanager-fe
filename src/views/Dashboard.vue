@@ -390,10 +390,17 @@ const updatePassword = async () => {
     
     const response = await api.put(`/passwords/${passwordForm.value.id}`, updateData);
     
-    // Update the password in the list
+    
+    const updatedPassword = response.data.data;
+    // Pastikan decrypted_password tetap ada
+    if (!updatedPassword.decrypted_password && passwordForm.value.password) {
+      updatedPassword.decrypted_password = passwordForm.value.password;
+    }
+
+    // Update array
     const index = passwords.value.findIndex(p => p.id === passwordForm.value.id);
     if (index !== -1) {
-      passwords.value[index] = response.data.data;
+      passwords.value[index] = updatedPassword;
     }
     
     message.value = "Password updated successfully!";
@@ -430,13 +437,14 @@ const deletePassword = async (id) => {
 
 const togglePasswordVisibility = async (password) => {
   if (showPasswords.value[password.id]) {
-    // Hide password
+    // Hide
     showPasswords.value[password.id] = false;
     delete decryptedPasswords.value[password.id];
   } else {
-    // Show password (pakai field baru dari backend)
+    // Show
     showPasswords.value[password.id] = true;
-    decryptedPasswords.value[password.id] = password.decrypted_password;
+    decryptedPasswords.value[password.id] = 
+      password.decrypted_password || decryptedPasswords.value[password.id] || '';
   }
 };
 

@@ -1,124 +1,127 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-2 sm:p-4">
     <div class="max-w-6xl mx-auto">
-      <!-- Header -->
-      <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-        <div class="flex justify-between items-center">
+      <!-- Header - Mobile Responsive -->
+      <div class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-100">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Password Manager</h1>
-            <p class="text-gray-600">Manage your passwords securely</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Password Manager</h1>
+            <p class="text-gray-600 text-sm sm:text-base">Manage your passwords securely</p>
           </div>
-          <div class="flex gap-3">
+          <div class="flex gap-2 sm:gap-3">
             <button 
               @click="logout"
-              class="bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2"
+              class="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base flex-1 sm:flex-none justify-center"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
               </svg>
-              Logout
+              <span class="hidden sm:inline">Logout</span>
             </button>
             <button 
               @click="showAddModal = true"
-              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 text-sm sm:text-base flex-1 sm:flex-none justify-center"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              Add Password
+              <span class="hidden sm:inline">Add Password</span>
+              <span class="sm:hidden">Add</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Search and Filter -->
-      <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-        <div class="flex gap-4">
+      <!-- Search and Filter - Mobile Responsive -->
+      <div class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-100">
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div class="flex-1">
             <input 
               v-model="searchQuery"
               type="text" 
-              placeholder="Search passwords by title or username..." 
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              placeholder="Search passwords..." 
+              class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
             />
           </div>
           <button 
             @click="loadPasswords"
-            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base"
           >
             Refresh
           </button>
         </div>
       </div>
 
-      <!-- Passwords Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Passwords Grid - Mobile First -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div 
           v-for="password in filteredPasswords" 
           :key="password.id"
-          class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-200"
+          class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-gray-100 hover:shadow-2xl transition-all duration-200"
         >
           <!-- Card Header -->
-          <div class="flex justify-between items-start mb-4">
-            <div class="flex-1">
-              <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ password.title }}</h3>
-              <p class="text-sm text-gray-600">{{ password.username || 'No username' }}</p>
+          <div class="flex justify-between items-start mb-3 sm:mb-4">
+            <div class="flex-1 pr-2">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 break-words">{{ password.title }}</h3>
+              <p class="text-xs sm:text-sm text-gray-600 break-words">{{ password.username || 'No username' }}</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-1 sm:gap-2 flex-shrink-0">
               <button 
                 @click="editPassword(password)"
-                class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                class="p-1.5 sm:p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
               </button>
               <button 
                 @click="deletePassword(password.id)"
-                class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                class="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
               </button>
             </div>
           </div>
 
-          <!-- Password Field -->
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <!-- Password Field - Mobile Optimized -->
+          <div class="mb-3 sm:mb-4">
+            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Password</label>
             <div class="flex gap-2">
-              <div class="flex-1 bg-gray-50 px-3 py-2 rounded-lg border">
-                <span class="text-gray-900 font-mono text-sm">
+              <div class="flex-1 bg-gray-50 px-2 sm:px-3 py-2 rounded-lg border min-w-0">
+                <span class="text-gray-900 font-mono text-xs sm:text-sm break-all">
                   {{ showPasswords[password.id] ? decryptedPasswords[password.id] || '••••••••' : '••••••••' }}
                 </span>
               </div>
-              <button 
-                @click="togglePasswordVisibility(password)"
-                class="p-2 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200"
-              >
-                <svg v-if="!showPasswords[password.id]" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                </svg>
-              </button>
-              <button 
-                @click="copyToClipboard(password)"
-                class="p-2 text-gray-400 hover:text-green-500 border border-gray-300 rounded-lg hover:bg-green-50 transition-all duration-200"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                </svg>
-              </button>
+              <div class="flex gap-1 flex-shrink-0">
+                <button 
+                  @click="togglePasswordVisibility(password)"
+                  class="p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                >
+                  <svg v-if="!showPasswords[password.id]" class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  <svg v-else class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                  </svg>
+                </button>
+                <button 
+                  @click="copyToClipboard(password)"
+                  class="p-1.5 sm:p-2 text-gray-400 hover:text-green-500 border border-gray-300 rounded-lg hover:bg-green-50 transition-all duration-200"
+                >
+                  <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
-          <!-- Tags -->
-          <div v-if="password.tags" class="mb-4">
-            <div class="flex flex-wrap gap-2">
+          <!-- Tags - Mobile Optimized -->
+          <div v-if="password.tags" class="mb-3 sm:mb-4">
+            <div class="flex flex-wrap gap-1 sm:gap-2">
               <span 
                 v-for="tag in password.tags.split(',')" 
                 :key="tag"
@@ -137,33 +140,33 @@
       </div>
 
       <!-- Empty State -->
-      <div v-if="passwords.length === 0 && !isLoading" class="text-center py-12">
-        <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-if="passwords.length === 0 && !isLoading" class="text-center py-8 sm:py-12">
+        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No passwords yet</h3>
-        <p class="text-gray-600 mb-4">Start by adding your first password</p>
+        <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">No passwords yet</h3>
+        <p class="text-gray-600 mb-4 text-sm sm:text-base px-4">Start by adding your first password</p>
         <button 
           @click="showAddModal = true"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base"
         >
           Add Your First Password
         </button>
       </div>
 
       <!-- Loading State -->
-      <div v-if="isLoading" class="text-center py-12">
-        <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-        <p class="text-gray-600">Loading passwords...</p>
+      <div v-if="isLoading" class="text-center py-8 sm:py-12">
+        <div class="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p class="text-gray-600 text-sm sm:text-base">Loading passwords...</p>
       </div>
     </div>
 
-    <!-- Add/Edit Modal -->
-    <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+    <!-- Add/Edit Modal - Mobile Optimized -->
+    <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+      <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md p-4 sm:p-6 max-h-[90vh] sm:max-h-none overflow-y-auto">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
           {{ showEditModal ? 'Edit Password' : 'Add New Password' }}
         </h2>
 
@@ -175,7 +178,7 @@
               v-model="passwordForm.title" 
               type="text" 
               placeholder="e.g., Gmail, Facebook, Work Email" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
               required 
             />
           </div>
@@ -187,7 +190,7 @@
               v-model="passwordForm.username" 
               type="text" 
               placeholder="username or email" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
             />
           </div>
 
@@ -199,7 +202,7 @@
                 v-model="passwordForm.password" 
                 :type="showFormPassword ? 'text' : 'password'" 
                 placeholder="Enter password" 
-                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                class="w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
                 required 
               />
               <button 
@@ -207,11 +210,11 @@
                 @click="showFormPassword = !showFormPassword"
                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
               >
-                <svg v-if="!showFormPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-if="!showFormPassword" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
-                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-else class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
                 </svg>
               </button>
@@ -219,7 +222,7 @@
             <button 
               type="button" 
               @click="generatePassword"
-              class="mt-2 text-sm text-blue-500 hover:text-blue-600 font-medium"
+              class="mt-2 text-xs sm:text-sm text-blue-500 hover:text-blue-600 font-medium"
             >
               Generate Strong Password
             </button>
@@ -231,24 +234,24 @@
             <input 
               v-model="passwordForm.tags" 
               type="text" 
-              placeholder="work, personal, social (comma separated)" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              placeholder="work, personal, social" 
+              class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
             />
           </div>
 
-          <!-- Buttons -->
-          <div class="flex gap-3 pt-4">
+          <!-- Buttons - Mobile Stack -->
+          <div class="flex flex-col sm:flex-row gap-3 pt-4">
             <button 
               type="button" 
               @click="closeModal"
-              class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-semibold transition-all duration-200"
+              class="w-full sm:flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base"
             >
               Cancel
             </button>
             <button 
               type="submit" 
               :disabled="isSubmitting"
-              class="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200"
+              class="w-full sm:flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base"
             >
               {{ isSubmitting ? 'Saving...' : (showEditModal ? 'Update' : 'Add') }}
             </button>
@@ -257,11 +260,11 @@
       </div>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div v-if="message" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    <!-- Success/Error Messages - Mobile Positioned -->
+    <div v-if="message" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto bg-green-500 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg z-50 text-sm sm:text-base">
       {{ message }}
     </div>
-    <div v-if="error" class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    <div v-if="error" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto bg-red-500 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg z-50 text-sm sm:text-base">
       {{ error }}
     </div>
   </div>
@@ -550,5 +553,17 @@ onMounted(() => {
 
 .bg-white {
   animation: fadeInUp 0.3s ease-out;
+}
+
+/* Ensure text doesn't overflow on mobile */
+@media (max-width: 640px) {
+  .break-words {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .break-all {
+    word-break: break-all;
+  }
 }
 </style>

@@ -460,12 +460,27 @@ const copyToClipboard = async (password) => {
       return;
     }
 
+    // coba clipboard API modern
     await navigator.clipboard.writeText(passwordToCopy);
     message.value = "Password copied to clipboard!";
     clearMessage();
   } catch (err) {
-    error.value = "Failed to copy password";
-    clearMessage();
+    // fallback ke cara lama
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = passwordToCopy;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+
+      message.value = "Password copied to clipboard!";
+      clearMessage();
+    } catch (fallbackErr) {
+      console.error("Copy error:", fallbackErr);
+      error.value = "Failed to copy password";
+      clearMessage();
+    }
   }
 };
 

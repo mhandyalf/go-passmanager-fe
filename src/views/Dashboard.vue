@@ -450,7 +450,16 @@ const togglePasswordVisibility = async (password) => {
 
 const copyToClipboard = async (password) => {
   try {
-    const passwordToCopy = decryptedPasswords.value[password.id] || password.decrypted_password;
+    const passwordToCopy = decryptedPasswords.value[password.id] 
+      || password.decrypted_password 
+      || "";
+
+    if (!passwordToCopy) {
+      error.value = "No password available to copy";
+      clearMessage();
+      return;
+    }
+
     await navigator.clipboard.writeText(passwordToCopy);
     message.value = "Password copied to clipboard!";
     clearMessage();

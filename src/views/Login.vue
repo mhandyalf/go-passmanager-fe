@@ -16,20 +16,20 @@
 
         <!-- Form -->
         <form @submit.prevent="login" class="space-y-5">
-          <!-- Email Field -->
+          <!-- Username Field -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
             <div class="relative">
               <input 
-                v-model="email" 
-                type="email" 
-                placeholder="Enter your email" 
+                v-model="username" 
+                type="text" 
+                placeholder="Enter your username" 
                 class="input-field"
                 required 
               />
               <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
               </div>
             </div>
@@ -144,7 +144,7 @@
         <div class="mt-6 text-center">
           <p class="text-gray-600 text-sm">
             Don't have an account? 
-            <a href="#" class="text-blue-500 hover:text-blue-600 font-medium transition-colors">Create one</a>
+            <a href="/register" class="text-blue-500 hover:text-blue-600 font-medium transition-colors">Create one</a>
           </p>
         </div>
       </div>
@@ -156,7 +156,7 @@
 import { ref } from "vue";
 import api from "../api";
 
-const email = ref("");
+const username = ref("");  // Changed from email
 const password = ref("");
 const message = ref("");
 const error = ref("");
@@ -171,19 +171,23 @@ const login = async () => {
     message.value = "";
     
     const res = await api.post("/login", {
-      email: email.value,
+      username: username.value,  // Changed from email
       password: password.value,
     });
-    
-    // Note: localStorage is not supported in Claude artifacts
+
     // In a real application, you would use localStorage here:
-    // localStorage.setItem("token", res.data.token);
     
+    localStorage.setItem("token", res.data.token);
     message.value = "Login successful! Welcome back.";
+
+    // Redirect ke dashboard/password manager
+    setTimeout(() => {
+    window.location.href = '/dashboard'; // Atau gunakan Vue Router
+    }, 1000);
     
     // Clear form on success
     setTimeout(() => {
-      email.value = "";
+      username.value = "";  // Changed from email
       password.value = "";
     }, 2000);
     

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Ganti dengan URL backend Anda
-const API_BASE_URL = 'http://localhost:8080/api'; // atau URL server Anda
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -12,40 +12,32 @@ const api = axios.create({
   }
 });
 
-// Request interceptor untuk debugging
+// Request interceptor - otomatis include token di setiap request
 api.interceptors.request.use(
   (config) => {
-    console.log('🚀 API Request:', {
-      method: config.method,
-      url: config.url,
-      data: config.data,
-      headers: config.headers
-    });
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
-    console.error('❌ Request Error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor untuk debugging
+// Response interceptor - handle expired token atau unauthorized
 api.interceptors.response.use(
   (response) => {
-    console.log('✅ API Response:', {
-      status: response.status,
-      data: response.data,
-      url: response.config.url
-    });
     return response;
   },
   (error) => {
-    console.error('❌ API Error:', {
-      status: error.response?.status,
-      message: error.response?.data?.message || error.message,
-      url: error.config?.url,
-      data: error.response?.data
-    });
+    if (error.response?.status === 401) {
+      // Token expired atau invalid
+      localStorage.removeItem('token');
+      // Redirect ke login page
+      window.location.href = '/login'; // Atau gunakan Vue Router
+    }
     return Promise.reject(error);
   }
 );

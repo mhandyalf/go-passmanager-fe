@@ -385,7 +385,7 @@ const updatePassword = async () => {
     
     // Only include password if it's not empty
     if (passwordForm.value.password) {
-      updateData.encrypted_password = passwordForm.value.password;
+      updateData.password = passwordForm.value.password;
     }
     
     const response = await api.put(`/passwords/${passwordForm.value.id}`, updateData);

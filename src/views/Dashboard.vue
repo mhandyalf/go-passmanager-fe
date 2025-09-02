@@ -449,24 +449,26 @@ const togglePasswordVisibility = async (password) => {
 };
 
 const copyToClipboard = async (password) => {
+  // definisikan dulu di scope luar
+  const passwordToCopy = decryptedPasswords.value[password.id] 
+    || password.decrypted_password 
+    || "";
+
+  if (!passwordToCopy) {
+    error.value = "No password available to copy";
+    clearMessage();
+    return;
+  }
+
   try {
-    const passwordToCopy = decryptedPasswords.value[password.id] 
-      || password.decrypted_password 
-      || "";
-
-    if (!passwordToCopy) {
-      error.value = "No password available to copy";
-      clearMessage();
-      return;
-    }
-
-    // coba clipboard API modern
+    // coba API modern
     await navigator.clipboard.writeText(passwordToCopy);
     message.value = "Password copied to clipboard!";
     clearMessage();
   } catch (err) {
-    // fallback ke cara lama
+    console.warn("Clipboard API failed, using fallback:", err);
     try {
+      // fallback pakai execCommand
       const textarea = document.createElement("textarea");
       textarea.value = passwordToCopy;
       document.body.appendChild(textarea);

@@ -200,6 +200,7 @@ const login = async () => {
 </script>
 
 <style scoped>
+@reference "../style.css";
 .input-field {
   @apply w-full px-4 py-3 border border-gray-300 rounded-lg bg-white;
   @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none;

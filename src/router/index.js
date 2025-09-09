@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
+import ForgotPassword from "../views/ForgotPassword.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 import { auth } from '../utils/auth.js'
 
 const routes = [
@@ -15,7 +17,6 @@ const routes = [
     name: 'Login',
     component: Login,
     beforeEnter: (to, from, next) => {
-      // Kalau sudah login, redirect ke dashboard
       if (auth.isAuthenticated()) {
         next('/dashboard');
       } else {
@@ -24,11 +25,10 @@ const routes = [
     }
   },
   {
-    path: '/register', 
+    path: '/register',
     name: 'Register',
     component: Register,
     beforeEnter: (to, from, next) => {
-      // Kalau sudah login, redirect ke dashboard
       if (auth.isAuthenticated()) {
         next('/dashboard');
       } else {
@@ -37,11 +37,20 @@ const routes = [
     }
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword
+  },
+  {
     path: '/dashboard',
-    name: 'Dashboard', 
+    name: 'Dashboard',
     component: Dashboard,
     beforeEnter: (to, from, next) => {
-      // Route protection - harus login dulu
       if (auth.isAuthenticated()) {
         next();
       } else {

@@ -68,9 +68,10 @@
               <input v-model="rememberMe" type="checkbox" class="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500">
               <span class="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <a href="#" class="text-sm text-blue-500 hover:text-blue-600 font-medium transition-colors">
+            <router-link to="/forgot-password" 
+              class="text-sm text-blue-500 hover:text-blue-600 font-medium transition-colors">
               Forgot password?
-            </a>
+            </router-link>
           </div>
 
           <!-- Submit Button -->

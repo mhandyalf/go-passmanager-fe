@@ -40,31 +40,10 @@ const route = useRoute();
 
 <style scoped>
 .navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1f3d91;
   padding: 1rem 0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.navbar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%), 
-              linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%);
-  background-size: 20px 20px;
-  animation: movePattern 20s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes movePattern {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(40px); }
 }
 
 .nav-container {
@@ -97,47 +76,27 @@ const route = useRoute();
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.4rem;
   color: white;
   text-decoration: none;
-  border-radius: 25px;
+  border-radius: 9999px;
   font-weight: 500;
   font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s ease;
-}
-
-.nav-link:hover::before {
-  left: 100%;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .nav-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  background: #ffffff;
+  color: #1f3d91;
+  border-color: #ffffff;
+  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.15);
 }
 
 .nav-link .icon {

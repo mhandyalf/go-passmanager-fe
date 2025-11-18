@@ -35,13 +35,20 @@
       <!-- Search and Filter - Mobile Responsive -->
       <div class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-100">
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-          <div class="flex-1">
+          <div class="flex-1 flex gap-2">
             <input 
               v-model="searchQuery"
               type="text" 
               placeholder="Search passwords..." 
               class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none text-sm sm:text-base"
             />
+            <button 
+              v-if="searchQuery"
+              @click="clearFilters"
+              class="px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200"
+            >
+              Clear
+            </button>
           </div>
           <button 
             @click="loadPasswords"
@@ -50,93 +57,143 @@
             Refresh
           </button>
         </div>
+
+        <div v-if="activeTag" class="mt-3 flex items-center gap-2 flex-wrap">
+          <span class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 text-sm">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            Filtering by: {{ activeTag }}
+          </span>
+          <button 
+            @click="clearFilters"
+            class="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+          >
+            Clear filter
+          </button>
+        </div>
       </div>
 
       <!-- Passwords Grid - Mobile First -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div 
-          v-for="password in filteredPasswords" 
-          :key="password.id"
-          class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-gray-100 hover:shadow-2xl transition-all duration-200"
-        >
-          <!-- Card Header -->
-          <div class="flex justify-between items-start mb-3 sm:mb-4">
-            <div class="flex-1 pr-2">
-              <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 break-words">{{ password.title }}</h3>
-              <p class="text-xs sm:text-sm text-gray-600 break-words">{{ password.username || 'No username' }}</p>
+        <!-- Skeletons -->
+        <template v-if="isLoading">
+          <div v-for="n in 6" :key="n" class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+              <div class="skeleton h-6 w-32"></div>
+              <div class="skeleton h-8 w-16 rounded-lg"></div>
             </div>
-            <div class="flex gap-1 sm:gap-2 flex-shrink-0">
-              <button 
-                @click="editPassword(password)"
-                class="p-1.5 sm:p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
-              >
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-              </button>
-              <button 
-                @click="deletePassword(password.id)"
-                class="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
-              >
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-              </button>
-            </div>
+            <div class="skeleton h-10 w-full mb-3 rounded-lg"></div>
+            <div class="skeleton h-4 w-24 mb-2 rounded-full"></div>
+            <div class="skeleton h-4 w-36 rounded-full"></div>
           </div>
+        </template>
 
-          <!-- Password Field - Mobile Optimized -->
-          <div class="mb-3 sm:mb-4">
-            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Password</label>
-            <div class="flex gap-2">
-              <div class="flex-1 bg-gray-50 px-2 sm:px-3 py-2 rounded-lg border min-w-0">
-                <span class="text-gray-900 font-mono text-xs sm:text-sm break-all">
-                  {{ showPasswords[password.id] ? decryptedPasswords[password.id] || '••••••••' : '••••••••' }}
-                </span>
+        <!-- Password Cards -->
+        <template v-else-if="filteredPasswords.length">
+          <div 
+            v-for="password in filteredPasswords" 
+            :key="password.id"
+            class="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-gray-100 hover:shadow-2xl transition-all duration-200"
+          >
+            <!-- Card Header -->
+            <div class="flex justify-between items-start mb-3 sm:mb-4">
+              <div class="flex-1 pr-2">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 break-words">{{ password.title }}</h3>
+                <p class="text-xs sm:text-sm text-gray-600 break-words">{{ password.username || 'No username' }}</p>
               </div>
-              <div class="flex gap-1 flex-shrink-0">
+              <div class="flex gap-1 sm:gap-2 flex-shrink-0">
                 <button 
-                  @click="togglePasswordVisibility(password)"
-                  class="p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  @click="editPassword(password)"
+                  class="p-1.5 sm:p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
                 >
-                  <svg v-if="!showPasswords[password.id]" class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <svg v-else class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                  <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                   </svg>
                 </button>
                 <button 
-                  @click="copyToClipboard(password)"
-                  class="p-1.5 sm:p-2 text-gray-400 hover:text-green-500 border border-gray-300 rounded-lg hover:bg-green-50 transition-all duration-200"
+                  @click="deletePassword(password.id)"
+                  class="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
                 >
                   <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4 bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-100">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs uppercase tracking-wide text-gray-500 font-semibold">Password</span>
+                <button 
+                  @click="togglePasswordVisibility(password)"
+                  class="text-blue-500 hover:text-blue-600 text-xs font-semibold flex items-center gap-1"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path v-if="showPasswords[password.id]" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                    <template v-else>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </template>
+                  </svg>
+                  {{ showPasswords[password.id] ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <input 
+                  :type="showPasswords[password.id] ? 'text' : 'password'" 
+                  :value="showPasswords[password.id] ? (decryptedPasswords[password.id] || password.decrypted_password || '') : '••••••••••'"
+                  readonly
+                  class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                />
+                <button 
+                  @click="copyToClipboard(password)"
+                  class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                   </svg>
                 </button>
               </div>
             </div>
-          </div>
 
-          <!-- Tags - Mobile Optimized -->
-          <div v-if="password.tags" class="mb-3 sm:mb-4">
-            <div class="flex flex-wrap gap-1 sm:gap-2">
-              <span 
-                v-for="tag in password.tags.split(',')" 
-                :key="tag"
-                class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2 mb-3">
+              <button 
+                v-for="tag in (password.tags || '').split(',')" 
+                :key="tag" 
+                type="button"
+                @click.stop="setTagFilter(tag)"
+                class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold rounded-full border transition-all duration-150"
+                :class="activeTag === tag.trim() ? 'bg-blue-600 text-white border-blue-600' : 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100'"
               >
+                <span class="tag-dot"></span>
                 {{ tag.trim() }}
-              </span>
+              </button>
+            </div>
+
+            <!-- Created Date -->
+            <div class="text-xs text-gray-500">
+              Created: {{ formatDate(password.created_at) }}
             </div>
           </div>
+        </template>
+      </div>
 
-          <!-- Created Date -->
-          <div class="text-xs text-gray-500">
-            Created: {{ formatDate(password.created_at) }}
-          </div>
+      <!-- Empty State for search -->
+      <div v-if="!isLoading && passwords.length > 0 && filteredPasswords.length === 0" class="text-center py-8 sm:py-12">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 15h.01M12 15h.01M16 15h.01M9 11h6m2 10H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v10a2 2 0 01-2 2z"></path>
+          </svg>
         </div>
+        <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">No results found</h3>
+        <p class="text-gray-600 mb-4 text-sm sm:text-base px-4">Try different keywords or clear filters</p>
+        <button 
+          @click="clearFilters"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base"
+        >
+          Reset search
+        </button>
       </div>
 
       <!-- Empty State -->
@@ -154,12 +211,6 @@
         >
           Add Your First Password
         </button>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="isLoading" class="text-center py-8 sm:py-12">
-        <div class="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-        <p class="text-gray-600 text-sm sm:text-base">Loading passwords...</p>
       </div>
     </div>
 
@@ -261,22 +312,28 @@
     </div>
 
     <!-- Success/Error Messages - Mobile Positioned -->
-    <div v-if="message" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto bg-green-500 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg z-50 text-sm sm:text-base">
-      {{ message }}
-    </div>
-    <div v-if="error" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto bg-red-500 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg z-50 text-sm sm:text-base">
-      {{ error }}
-    </div>
+    <transition name="fade">
+      <div 
+        v-if="toastText" 
+        class="fixed left-4 right-4 sm:left-auto sm:right-6 bottom-6 sm:bottom-8 sm:w-80 px-4 sm:px-5 py-3 rounded-lg shadow-2xl border text-sm sm:text-base z-50 flex items-start gap-3"
+        :class="toastType === 'error' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-green-50 text-green-800 border-green-200'"
+      >
+        <span class="w-2 h-2 mt-1 rounded-full flex-shrink-0" :class="toastType === 'error' ? 'bg-red-500' : 'bg-green-500'"></span>
+        <div class="flex-1">{{ toastText }}</div>
+        <button class="text-xs font-semibold opacity-70 hover:opacity-100" @click="clearMessage(true)">Close</button>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import api from "../api"; // Pastikan ini sesuai dengan struktur project kamu
+import api from "../api";
 
 // State variables
 const passwords = ref([]);
 const searchQuery = ref("");
+const activeTag = ref("");
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 const message = ref("");
@@ -302,15 +359,32 @@ const passwordForm = ref({
 
 // Computed
 const filteredPasswords = computed(() => {
-  if (!searchQuery.value) return passwords.value;
-  
-  const query = searchQuery.value.toLowerCase();
-  return passwords.value.filter(password => 
-    password.title.toLowerCase().includes(query) ||
-    (password.username && password.username.toLowerCase().includes(query)) ||
-    (password.tags && password.tags.toLowerCase().includes(query))
-  );
+  let list = passwords.value;
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    list = list.filter(password => 
+      password.title.toLowerCase().includes(query) ||
+      (password.username && password.username.toLowerCase().includes(query)) ||
+      (password.tags && password.tags.toLowerCase().includes(query))
+    );
+  }
+
+  if (activeTag.value) {
+    const tag = activeTag.value.toLowerCase();
+    list = list.filter(password => 
+      (password.tags || "")
+        .split(",")
+        .map(t => t.trim().toLowerCase())
+        .includes(tag)
+    );
+  }
+
+  return list;
 });
+
+const toastText = computed(() => error.value || message.value);
+const toastType = computed(() => error.value ? "error" : "success");
 
 // Methods
 const loadPasswords = async () => {
@@ -343,7 +417,6 @@ const createPassword = async () => {
     
     const newPassword = response.data.data;
     
-    // PENTING: Pastikan ada decrypted_password untuk toggle
     if (!newPassword.decrypted_password) {
       newPassword.decrypted_password = passwordForm.value.password;
     }
@@ -366,7 +439,7 @@ const editPassword = (password) => {
     id: password.id,
     title: password.title,
     username: password.username || "",
-    password: "", // Don't pre-fill password for security
+    password: "",
     tags: password.tags || ""
   };
   showEditModal.value = true;
@@ -383,21 +456,17 @@ const updatePassword = async () => {
       tags: passwordForm.value.tags
     };
     
-    // Only include password if it's not empty
     if (passwordForm.value.password) {
       updateData.password = passwordForm.value.password;
     }
     
     const response = await api.put(`/passwords/${passwordForm.value.id}`, updateData);
     
-    
     const updatedPassword = response.data.data;
-    // Pastikan decrypted_password tetap ada
     if (!updatedPassword.decrypted_password && passwordForm.value.password) {
       updatedPassword.decrypted_password = passwordForm.value.password;
     }
 
-    // Update array
     const index = passwords.value.findIndex(p => p.id === passwordForm.value.id);
     if (index !== -1) {
       passwords.value[index] = updatedPassword;
@@ -437,11 +506,9 @@ const deletePassword = async (id) => {
 
 const togglePasswordVisibility = async (password) => {
   if (showPasswords.value[password.id]) {
-    // Hide
     showPasswords.value[password.id] = false;
     delete decryptedPasswords.value[password.id];
   } else {
-    // Show
     showPasswords.value[password.id] = true;
     decryptedPasswords.value[password.id] = 
       password.decrypted_password || decryptedPasswords.value[password.id] || '';
@@ -449,7 +516,6 @@ const togglePasswordVisibility = async (password) => {
 };
 
 const copyToClipboard = async (password) => {
-  // definisikan dulu di scope luar
   const passwordToCopy = decryptedPasswords.value[password.id] 
     || password.decrypted_password 
     || "";
@@ -461,14 +527,12 @@ const copyToClipboard = async (password) => {
   }
 
   try {
-    // coba API modern
     await navigator.clipboard.writeText(passwordToCopy);
     message.value = "Password copied to clipboard!";
     clearMessage();
   } catch (err) {
     console.warn("Clipboard API failed, using fallback:", err);
     try {
-      // fallback pakai execCommand
       const textarea = document.createElement("textarea");
       textarea.value = passwordToCopy;
       document.body.appendChild(textarea);
@@ -511,11 +575,31 @@ const closeModal = () => {
   };
 };
 
-const clearMessage = () => {
-  setTimeout(() => {
+const clearMessage = (immediate = false) => {
+  const clear = () => {
     message.value = "";
     error.value = "";
-  }, 3000);
+  };
+  if (immediate) {
+    clear();
+    return;
+  }
+  setTimeout(clear, 3000);
+};
+
+const setTagFilter = (tag) => {
+  const trimmed = tag.trim();
+  if (!trimmed) return;
+  activeTag.value = trimmed;
+  if (!searchQuery.value) {
+    message.value = `Filtering by "${trimmed}"`;
+    clearMessage();
+  }
+};
+
+const clearFilters = () => {
+  searchQuery.value = "";
+  activeTag.value = "";
 };
 
 const formatDate = (dateString) => {
@@ -536,10 +620,8 @@ const logout = () => {
     passwords.value = [];
     message.value = "Logged out successfully!";
     
-    // Langsung redirect dengan window.location
     setTimeout(() => {
       window.location.href = '/login';
-      // Atau kalau login page di root: window.location.href = '/';
     }, 500);
     
   } catch (err) {
@@ -587,6 +669,38 @@ onMounted(() => {
 
 .bg-white {
   animation: fadeInUp 0.3s ease-out;
+}
+
+/* Skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
 /* Ensure text doesn't overflow on mobile */

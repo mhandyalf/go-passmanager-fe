@@ -45,7 +45,7 @@ const isAuthPage = computed(() => ["/register", "/login"].includes(route.path));
 <style scoped>
 .auth-shell {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc, #e0f2fe);
+  background: linear-gradient(135deg, #fdf2f7, #f7c6d9);
 }
 
 .auth-header {
@@ -77,7 +77,7 @@ const isAuthPage = computed(() => ["/register", "/login"].includes(route.path));
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #f189b2, #f875aa);
   color: white;
   display: grid;
   place-items: center;

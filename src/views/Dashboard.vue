@@ -688,8 +688,8 @@ onMounted(() => {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #f189b2, #f875aa);
+  box-shadow: 0 4px 10px rgba(248, 117, 170, 0.35);
 }
 
 .fade-enter-active,

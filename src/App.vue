@@ -115,33 +115,33 @@ const isAuthPage = computed(() => ["/register", "/login"].includes(route.path));
   color: #0f172a;
   text-decoration: none;
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(248, 117, 170, 0.35);
+  background: rgba(255, 255, 255, 0.98);
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.18s ease;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 6px 16px rgba(248, 117, 170, 0.15);
 }
 
 .nav-link .dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #f189b2, #f875aa);
+  box-shadow: 0 4px 10px rgba(248, 117, 170, 0.4);
 }
 
 .nav-link:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 10px 24px rgba(248, 117, 170, 0.2);
+  border-color: rgba(248, 117, 170, 0.55);
 }
 
 .nav-link.active {
   color: #0b1b38;
-  border-color: rgba(59, 130, 246, 0.9);
-  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
-  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.18);
+  border-color: rgba(248, 117, 170, 0.9);
+  background: linear-gradient(135deg, #fde7f2, #f7c6d9);
+  box-shadow: 0 12px 30px rgba(248, 117, 170, 0.25);
 }
 
 @media (max-width: 768px) {

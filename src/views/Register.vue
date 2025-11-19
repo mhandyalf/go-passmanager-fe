@@ -206,23 +206,42 @@ const register = async () => {
 @reference "../style.css";
 .input-field {
   @apply w-full px-4 py-3 border border-gray-300 rounded-lg bg-white;
-  @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none;
+  @apply focus:ring-2 focus:outline-none;
   @apply placeholder-gray-400 text-gray-900;
   @apply transition-all duration-200 ease-in-out;
+  border-color: #d1d5db;
 }
 
 .input-field:hover {
   @apply border-gray-400;
 }
 
+.input-field:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px rgba(248, 117, 170, 0.25);
+}
+
 .submit-btn {
-  @apply w-full bg-blue-500 text-white py-3 px-4 rounded-lg font-semibold;
-  @apply hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-  @apply disabled:bg-blue-300 disabled:cursor-not-allowed;
+  @apply w-full text-white py-3 px-4 rounded-lg font-semibold;
+  @apply focus:outline-none;
   @apply transition-all duration-200 ease-in-out;
+  background-color: var(--brand-500);
+  border: 1px solid var(--brand-500);
+  box-shadow: 0 10px 20px rgba(248, 117, 170, 0.25);
 }
 
 .submit-btn:active:not(:disabled) {
   @apply transform scale-95;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: var(--brand-600);
+  border-color: var(--brand-600);
+}
+
+.submit-btn:disabled {
+  background-color: var(--brand-300);
+  border-color: var(--brand-300);
+  @apply cursor-not-allowed;
 }
 </style>

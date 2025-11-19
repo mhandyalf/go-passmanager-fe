@@ -37,3 +37,16 @@
 .focus\:border-blue-500:focus { border-color: var(--brand-500) !important; }
 
 .to-blue-50 { --tw-gradient-to: var(--brand-50) !important; }
+/* Components that still use custom classes */
+.submit-btn {
+  background-color: var(--brand-500) !important;
+  border-color: var(--brand-500) !important;
+}
+.submit-btn:hover {
+  background-color: var(--brand-600) !important;
+  border-color: var(--brand-600) !important;
+}
+.submit-btn:disabled {
+  background-color: var(--brand-300) !important;
+  border-color: var(--brand-300) !important;
+}

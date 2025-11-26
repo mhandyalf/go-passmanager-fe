@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
 import ForgotPassword from "../views/ForgotPassword.vue";
 import ResetPassword from "../views/ResetPassword.vue";
+import Faq from "../views/Faq.vue";
 import { auth } from '../utils/auth.js'
 
 const routes = [
@@ -35,6 +36,11 @@ const routes = [
         next();
       }
     }
+  },
+  {
+    path: '/faq',
+    name: 'Faq',
+    component: Faq
   },
   {
     path: '/forgot-password',

@@ -26,6 +26,14 @@
             <span class="dot"></span>
             Sign in
           </router-link>
+          <router-link 
+            to="/faq" 
+            class="nav-link"
+            :class="{ active: route.path === '/faq' }"
+          >
+            <span class="dot"></span>
+            Why it's safe?
+          </router-link>
         </div>
       </div>
     </header>
@@ -39,7 +47,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const isAuthPage = computed(() => ["/register", "/login"].includes(route.path));
+const isAuthPage = computed(() => ["/register", "/login", "/faq"].includes(route.path));
 </script>
 
 <style scoped>

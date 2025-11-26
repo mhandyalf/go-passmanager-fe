@@ -156,10 +156,14 @@ const isAuthPage = computed(() => ["/register", "/login", "/faq"].includes(route
   .nav-card {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem;
   }
 
   .nav-links {
     width: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .nav-link {
